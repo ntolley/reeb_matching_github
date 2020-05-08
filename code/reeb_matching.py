@@ -14,7 +14,7 @@ from os import listdir
 import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
-import cv2
+# import cv2
 import fileio
 import paramrw
 import itertools
@@ -25,21 +25,17 @@ sns.set()
 def load_tree(data_dir,prefix,file_name):
 
     #Preparing directory
-    s_dir = data_dir + prefix + '/' +  prefix + '_skeleton/'
-    # names = [f for f in listdir(s_dir) if isfile(join(s_dir, f))]
-    # names = [f_new.replace('_arcs.csv','') for f_new in names]
-    # names = [f_new.replace('_nodes.csv','') for f_new in names]
-    # names = np.unique(names)
+    s_dir = os.path.abspath(data_dir + '/' + prefix + '/' + 'skeleton')
 
-    csd_nodes_df = pd.read_csv(s_dir + file_name + '_nodes.csv', sep=',')
-    csd_connectivity_df = pd.read_csv(s_dir + file_name + '_arcs.csv', sep=',')
+    csd_nodes_df = pd.read_csv(s_dir + '/' + file_name + '_nodes.csv', sep=',')
+    csd_connectivity_df = pd.read_csv(s_dir + '/' + file_name + '_arcs.csv', sep=',')
 
 
-    node_points = np.array(csd_nodes_df[['Points:0','Points:1','Points:2']])
-    node_connectivity = np.array(csd_connectivity_df[['upNodeId','downNodeId']])
-    node_type = np.array(csd_nodes_df[['CriticalType']])
+    node_points = np.array(csd_nodes_df)
+    node_connectivity = np.array(csd_connectivity_df)
+    node_connectivity = node_connectivity.astype(int) - 1
 
-    return node_points, node_connectivity, node_type
+    return node_points, node_connectivity
 
 #Takes a list of file prefixes, computes a similarity matrix for all combinations
 def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
@@ -50,10 +46,10 @@ def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
 
     for tree_row in range(num_files):
         for tree_col in range(num_files):
-                R_points, R_connectivity, R_type = load_tree(data_dir,prefix,file_list[tree_row])
+                R_points, R_connectivity = load_tree(data_dir,prefix,file_list[tree_row])
                 R = make_graph(R_points,R_connectivity)
 
-                S_points, S_connectivity, S_type = load_tree(data_dir,prefix,file_list[tree_col])
+                S_points, S_connectivity = load_tree(data_dir,prefix,file_list[tree_col])
                 S = make_graph(S_points,S_connectivity)
 
                 similarity, MPAIR = match_graphs(R,S,resolution_list)
@@ -203,7 +199,7 @@ def edge_edit(B, start_node, end_node, interval_dict):
         nx.set_node_attributes(B,new_attributes)
 
         for node_idx in range(len(new_nodes)):
-            B.node[new_nodes[node_idx]]['Inserted'].append(new_nodes)
+            B.nodes[new_nodes[node_idx]]['Inserted'].append(new_nodes)
      
 
         return None
@@ -292,8 +288,8 @@ def MRG_attributes(A, resolution_list):
         #Attributes to be propogated through MRG
         {'Node_Count': 1,\
         'Resolution': resolution_list[0],\
-        'Range': [A.node[node_idx]['Position'][2]- half_width, A.node[node_idx]['Position'][2] + half_width],\
-        'Position': A.node[node_idx]['Position'],\
+        'Range': [A.nodes[node_idx]['Position'][2]- half_width, A.nodes[node_idx]['Position'][2] + half_width],\
+        'Position': A.nodes[node_idx]['Position'],\
         'Neighbors': list(A.neighbors(node_idx)),\
         'Proportion': 1/(total_R_nodes),\
         'Merge_List': {}\
@@ -320,8 +316,8 @@ def MRG_attributes(A, resolution_list):
             # {'Node_Count': np.sum([attribute_dict[inner_node]['Node_Count'] for inner_node in list(A.nodes[node_idx]['New_Merge'])]) - attribute_dict[node_idx]['Node_Count'],\
             {'Node_Count': 1 + len(A.nodes[node_idx]['Merged']),\
             'Resolution':res,\
-            'Range': [A.node[node_idx]['Position'][2]- half_width, A.node[node_idx]['Position'][2] + half_width],\
-            'Position': A.node[node_idx]['Position'],\
+            'Range': [A.nodes[node_idx]['Position'][2]- half_width, A.nodes[node_idx]['Position'][2] + half_width],\
+            'Position': A.nodes[node_idx]['Position'],\
             'Neighbors': list(A.neighbors(node_idx)),\
             # 'Proportion': (1+np.sum([attribute_dict[inner_node]['Node_Count'] for inner_node in list(A.nodes[node_idx]['New_Merge'])]))/total_nodes,\  
             'Proportion': (1 + len(A.nodes[node_idx]['Merged']))/(total_R_nodes),\
@@ -356,18 +352,18 @@ def make_graph(node_points, node_connectivity):
 
     return G
 
-def make_movie(image_folder, save_dir, images):
+# def make_movie(image_folder, save_dir, images):
 
-    frame = cv2.imread(os.path.join(image_folder, images[0]))
-    height, width, layers = frame.shape
+#     frame = cv2.imread(os.path.join(image_folder, images[0]))
+#     height, width, layers = frame.shape
 
-    video = cv2.VideoWriter(save_dir, 0, 30, (width,height))
+#     video = cv2.VideoWriter(save_dir, 0, 30, (width,height))
 
-    for image in images:
-        video.write(cv2.imread(os.path.join(image_folder, image)))
+#     for image in images:
+#         video.write(cv2.imread(os.path.join(image_folder, image)))
 
-    cv2.destroyAllWindows()
-    video.release()
+#     cv2.destroyAllWindows()
+#     video.release()
 
 #Identify nodes that belong to the same branch (monotonic increase or decrease)
 def get_MLIST(node_idx, attribute_dict):
