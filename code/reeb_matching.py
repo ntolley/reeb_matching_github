@@ -71,8 +71,8 @@ def wasserstein_sim_matrix(file_list, data_dir, prefix):
 
     for csd_row in range(num_files):
         for csd_col in range(num_files):
-                R_path = data_dir + '/' + prefix + '/' + file_list[csd_row]
-                S_path = data_dir + '/' + prefix + '/' + file_list[csd_col]
+                R_path = data_dir + '/' + prefix + '/points/' + file_list[csd_row]
+                S_path = data_dir + '/' + prefix + '/points/' + file_list[csd_col]
                 
                 R_points, S_points = np.array(pd.read_csv(R_path)), np.array(pd.read_csv(S_path)) 
                 Y1, Y2 = csd_functions.points2grid(R_points), csd_functions.points2grid(S_points)
