@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+import csd_functions
 from scipy.signal import decimate
 from scipy import interpolate
 import h5py
@@ -18,6 +19,8 @@ import seaborn as sns
 import fileio
 import paramrw
 import itertools
+from scipy.spatial.distance import cdist
+from scipy.optimize import linear_sum_assignment
 sns.set()
     
 
@@ -56,9 +59,34 @@ def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
                 similarity_matrix[tree_row,tree_col] = similarity
                 MPAIR_list.append(MPAIR)
 
-
+                print(tree_row,tree_col,'tree_sim = ', similarity)
 
     return similarity_matrix, MPAIR_list
+
+def wasserstein_sim_matrix(file_list, data_dir, prefix):
+    num_files = len(file_list)
+
+    similarity_matrix = np.empty((num_files,num_files))
+ 
+
+    for csd_row in range(num_files):
+        for csd_col in range(num_files):
+                R_path = data_dir + '/' + prefix + '/' + file_list[csd_row]
+                S_path = data_dir + '/' + prefix + '/' + file_list[csd_col]
+                
+                R_points, S_points = np.array(pd.read_csv(R_path)), np.array(pd.read_csv(S_path)) 
+                Y1, Y2 = csd_functions.points2grid(R_points), csd_functions.points2grid(S_points)
+
+                d = cdist(Y1, Y2)
+                assignment = linear_sum_assignment(d)
+
+                similarity =  d[assignment].sum()
+                similarity_matrix[csd_row,csd_col] = similarity
+                print(csd_row,csd_col,'w_sim = ', similarity)
+                
+
+
+    return similarity_matrix
 
 #Get file names from directory containing reeb graph data
 def get_skeleton_names(skeleton_dir):
