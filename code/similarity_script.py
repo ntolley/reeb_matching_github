@@ -18,7 +18,7 @@ prefix = 'gbarEvPyrAmpa_sweep'
 
 #Setup file paths
 data_dir = os.path.abspath('lfp_reeb_github/data')
-os.mkdir('data/'+ prefix)
+os.mkdir('data/'+ prefix + '/similarity_matrices')
 save_dir = os.path.abspath('data/' + prefix + '/similarity_matrices')
 
 #Calculate similarity matrix for 2D wasserstein
@@ -28,6 +28,7 @@ similarity_matrix_wasserstein = reeb_matching.wasserstein_sim_matrix(file_list_c
 
 wasserstein_file_list_save = save_dir + '/file_list_wasserstein.csv'
 wasserstein_sim_save = save_dir + '/similarity_matrix_wasserstein.csv'
+np.savetxt('similarity_matrix_wasserstein.csv', similarity_matrix_wasserstein, delimiter=',')
 np.savetxt(wasserstein_sim_save, similarity_matrix_wasserstein, delimiter=',')
 np.savetxt(wasserstein_file_list_save, file_list_csd, delimiter=',')
 
