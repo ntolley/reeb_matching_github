@@ -60,6 +60,7 @@ def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
                 MPAIR_list.append(MPAIR)
 
                 print(tree_row,tree_col,'tree_sim = ', similarity)
+                print(MPAIR)
 
     return similarity_matrix, MPAIR_list
 
