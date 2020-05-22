@@ -29,7 +29,7 @@ p_dir = data_dir + '/' + prefix + '/' + 'points/'
 file_list_csd = os.listdir(p_dir) 
 similarity_matrix_wasserstein = reeb_matching.wasserstein_sim_matrix(file_list_csd, data_dir,prefix)
 
-wasserstein_file_list_save = save_dir + '/file_list_wasserstein.csv'
+wasserstein_file_list_save = save_dir + '/file_list_wasserstein.txt'
 wasserstein_sim_save = save_dir + '/similarity_matrix_wasserstein.csv'
 np.savetxt('similarity_matrix_wasserstein.csv', similarity_matrix_wasserstein, delimiter=',')
 np.savetxt(wasserstein_sim_save, similarity_matrix_wasserstein, delimiter=',')
