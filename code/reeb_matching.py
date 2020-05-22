@@ -21,6 +21,7 @@ import paramrw
 import itertools
 from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
+from sklearn.preprocessing import MinMaxScaler
 sns.set()
     
 
@@ -33,8 +34,11 @@ def load_tree(data_dir,prefix,file_name):
     csd_nodes_df = pd.read_csv(s_dir + '/' + file_name + '_nodes.csv', sep=',')
     csd_connectivity_df = pd.read_csv(s_dir + '/' + file_name + '_arcs.csv', sep=',')
 
+    scaler = MinMaxScaler(feature_range=(-1,1))
 
     node_points = np.array(csd_nodes_df)
+    node_points[:2] = scaler.fit_transform(node_points[:2])
+
     node_connectivity = np.array(csd_connectivity_df)
     node_connectivity = node_connectivity.astype(int) - 1
 
@@ -60,7 +64,7 @@ def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
                 MPAIR_list.append(MPAIR)
 
                 print(tree_row,tree_col,'tree_sim = ', similarity)
-                print(MPAIR)
+                # print(MPAIR)
 
     return similarity_matrix, MPAIR_list
 
