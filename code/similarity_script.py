@@ -30,7 +30,7 @@ wasserstein_file_list_save = save_dir + '/file_list_wasserstein.csv'
 wasserstein_sim_save = save_dir + '/similarity_matrix_wasserstein.csv'
 np.savetxt('similarity_matrix_wasserstein.csv', similarity_matrix_wasserstein, delimiter=',')
 np.savetxt(wasserstein_sim_save, similarity_matrix_wasserstein, delimiter=',')
-np.savetxt(wasserstein_file_list_save, file_list_csd, delimiter=',')
+np.savetxt(wasserstein_file_list_save, np.array(file_list_csd), delimiter=',')
 
 
 #Calculate similarity matrix for reeb_matching
