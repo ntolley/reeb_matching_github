@@ -20,6 +20,7 @@ prefix = 'gbarEvPyrAmpa_reversed_inputs'
 data_dir = os.path.abspath('lfp_reeb_github/data')
 
 if not os.path.isdir('data/'+ prefix + '/similarity_matrices'):
+    os.mkdir('data/'+ prefix)
     os.mkdir('data/'+ prefix + '/similarity_matrices')
 
 save_dir = os.path.abspath('data/' + prefix + '/similarity_matrices')
