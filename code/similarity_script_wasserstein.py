@@ -14,7 +14,7 @@ from copy import deepcopy
 sns.set()
 
 #Files to operate on
-prefix = 'gbarEvPyrAmpa_sweep'
+prefix = 'gbarEvPyrAmpa_sweep_reversed_inputs'
 
 #Setup file paths
 data_dir = os.path.abspath('lfp_reeb_github/data')
