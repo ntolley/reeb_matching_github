@@ -13,23 +13,31 @@ import reeb_matching
 from copy import deepcopy
 sns.set()
 
-#Files to operate on
-prefix = 'gbarEvPyrAmpa_reversed_inputs'
+save_prefix = 'gbarEvPyrAmpa_merge'
 
 #Setup file paths
 data_dir = os.path.abspath('lfp_reeb_github/data')
 
-if not os.path.isdir('data/'+ prefix + '/similarity_matrices'):
-    os.mkdir('data/'+ prefix)
-    os.mkdir('data/'+ prefix + '/similarity_matrices')
+if not os.path.isdir('data/'+ save_prefix + '/similarity_matrices'):
+    os.mkdir('data/'+ save_prefix)
+    os.mkdir('data/'+ save_prefix + '/similarity_matrices')
 
-save_dir = os.path.abspath('data/' + prefix + '/similarity_matrices')
+save_dir = os.path.abspath('data/' + save_prefix + '/similarity_matrices')
+
+#Files to operate on
+prefix = ['gbarEvPyrAmpa_sweep','gbarEvPyrAmpa_reversed_inputs']
+
+flist1 = reeb_matching.get_skeleton_names(data_dir + '/' + prefix[0] + '/' + 'skeleton/') 
+flist2 = reeb_matching.get_skeleton_names(data_dir + '/' + prefix[1] + '/' + 'skeleton/')
+file_list_tree = flist1 + flist2
+
+data_dir_array = np.repeat(data_dir, len(file_list_tree))
+prefix_array = np.repeat(prefix, [len(flist1), len(flist2)])
+
 
 #Calculate similarity matrix for reeb_matching
-s_dir = data_dir + '/' + prefix + '/' + 'skeleton/'
-file_list_tree = reeb_matching.get_skeleton_names(s_dir) 
 resolution_list = [16,8,4,2]
-similarity_matrix_tree, MPAIR_list = reeb_matching.tree_sim_matrix(file_list_tree, resolution_list, data_dir, prefix)
+similarity_matrix_tree, MPAIR_list = reeb_matching.tree_sim_matrix(file_list_tree, resolution_list, data_dir_array, prefix_array)
 
 tree_sim_save = save_dir + '/similarity_matrix_reeb.csv'
 tree_file_list_save = save_dir + '/file_list_reeb.txt'

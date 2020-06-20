@@ -53,10 +53,10 @@ def tree_sim_matrix(file_list, resolution_list, data_dir, prefix):
 
     for tree_row in range(num_files):
         for tree_col in range(num_files):
-                R_points, R_connectivity = load_tree(data_dir,prefix,file_list[tree_row])
+                R_points, R_connectivity = load_tree(data_dir[tree_row],prefix[tree_row],file_list[tree_row])
                 R = make_graph(R_points,R_connectivity)
 
-                S_points, S_connectivity = load_tree(data_dir,prefix,file_list[tree_col])
+                S_points, S_connectivity = load_tree(data_dir[tree_col],prefix[tree_col],file_list[tree_col])
                 S = make_graph(S_points,S_connectivity)
 
                 similarity, MPAIR = match_graphs(R,S,resolution_list)
@@ -76,8 +76,8 @@ def wasserstein_sim_matrix(file_list, data_dir, prefix):
 
     for csd_row in range(num_files):
         for csd_col in range(num_files):
-                R_path = data_dir + '/' + prefix + '/points/' + file_list[csd_row]
-                S_path = data_dir + '/' + prefix + '/points/' + file_list[csd_col]
+                R_path = data_dir[csd_row] + '/' + prefix[csd_row] + '/points/' + file_list[csd_row]
+                S_path = data_dir[csd_col] + '/' + prefix[csd_col] + '/points/' + file_list[csd_col]
                 
                 R_points, S_points = np.array(pd.read_csv(R_path)), np.array(pd.read_csv(S_path)) 
                 Y1, Y2 = csd_functions.points2grid(R_points), csd_functions.points2grid(S_points)
