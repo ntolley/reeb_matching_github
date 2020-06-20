@@ -29,7 +29,7 @@ prefix = ['gbarEvPyrAmpa_sweep','gbarEvPyrAmpa_reversed_inputs']
 
 flist1 = reeb_matching.get_skeleton_names(data_dir + '/' + prefix[0] + '/' + 'skeleton/') 
 flist2 = reeb_matching.get_skeleton_names(data_dir + '/' + prefix[1] + '/' + 'skeleton/')
-file_list_tree = flist1 + flist2
+file_list_tree = np.concatenate([flist1,flist2])
 
 data_dir_array = np.repeat(data_dir, len(file_list_tree))
 prefix_array = np.repeat(prefix, [len(flist1), len(flist2)])
